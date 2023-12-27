@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Arguments -->
+
+  <!-- <arg name="run_elevation_map" 
+       defualt="true"/> -->
+
+  <arg name="camera_in_elevation_mapping"
+       default="false"/>
+
+  <arg name="traversability_in_elevation_mapping"
+       default="true"/>
+
+  <arg name="run_rtabmap"
+       default="true"/>
+
+  <arg name="offline"
+       default="false"/>
+
+  <arg name="rtabmapviz"
+       default="false"/>
+
+  <arg name="run_navigation"
+       default="true"/>
+
+
+
+  <arg name="sim"
+       default="true"
+       doc="run on simulation or real robot?"/>
+  
+  <arg name="use_global_map"
+       default="false"
+       doc="whether to use predefined map for global planning"/>
+
+  <arg name="exploration"
+       default="false"
+       doc="whether to use parameters for exploration"/>
+
+  <arg name="run_traversability"
+       default="true"
+       doc="for turning on traversability estimation (requires extra dependencies, check documentation)"/>
+  
+  <arg name="follow_waypoints"
+       default="false"
+       doc="whether to follow multiple waypoints stored in the input file (also used to save waypoints, see SMB path planner Wiki)"/>
+  
+  <arg name="global_frame"
+       default="map"
+       doc="fixed global frame name in which odometry, map, etc are defined"/>
+  
+  <arg name="map_frame"
+       default="$(arg global_frame)"
+       doc="frame name in which the global costmap is defined"/>
+  
+  <arg name="robot_base_frame"
+       default="camera_link"
+       doc="robot's base frame (typically fixed frame attached to the robot)"/>
+  
+  <arg name="odom_topic"
+       default="rtabmap/odom"
+       doc="odometry of the robot is published on this topic"/>
+       
+
+  <!-- TODO Set right map empty map there is nothing here  -->
+  <arg name="global_map"
+       default="$(find smb_navigation)/data/simulation/map.yaml"
+       doc="global map file path"/>
+  
+  <!-- Starting the Camera and getting pointcloud and posewithcovariance data using rtabmap Package -->
+  <group if="$(arg run_rtabmap)">
+    <include file="$(find my_realsense)/launch/D435i_mapping.launch">
+     <arg name="offline"           value="$(arg offline)"/>
+     <arg name="rtabmapviz"        value="$(arg rtabmapviz)"/>
+     <arg name="rviz"              value="false"/>
+    </include>
+  </group>
+
+  <!-- Creating Elevation Map based on realsense data  -->
+  <!-- <group if="$(arg run_elevation_map)"> -->
+    <include file="$(find elevation_mapping)/launch/elevationMap_realsense_d435i.launch">
+     <arg name="camera"            value="$(arg camera_in_elevation_mapping)"/>
+     <arg name="traversability"    value="$(arg traversability_in_elevation_mapping)"/>
+    </include>
+  <!-- </group> -->
+
+  <group if="$(arg run_navigation)">
+    <!-- This is move base with traversability estimation - you can switch cost layers on and off from dynamic rqt -->
+    <include file="$(find elevation_mapping)/launch/move_base_ompl_traversability_simulation.launch">
+      <arg name="global_frame"     value="$(arg global_frame)"/>
+      <arg name="robot_base_frame" value="$(arg robot_base_frame)"/>
+      <arg name="odom_topic"       value="/rtabmap/odom"/>
+      <arg name="sim"              value="$(arg sim)"/>
+    </include>
+  </group>
+
+  <!-- Launch RViz with the demo configuration. -->
+  <!-- <include file="$(find smb_opc)/launch/opc.launch"/> -->
+
+
+</launch> 

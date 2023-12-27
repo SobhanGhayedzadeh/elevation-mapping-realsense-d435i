@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+
+<include file="$(find my_realsense)/launch/D435i_mapping.launch"/>
+
+</launch>

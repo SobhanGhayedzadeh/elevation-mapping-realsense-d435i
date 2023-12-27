@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Arguments -->
+  <arg name="sim"
+       default="true"
+       doc="run on simulation or real robot?"/>
+  
+  <arg name="use_global_map"
+       default="false"
+       doc="whether to use predefined map for global planning"/>
+
+  <arg name="exploration"
+       default="false"
+       doc="whether to use parameters for exploration"/>
+
+  <arg name="run_traversability"
+       default="true"
+       doc="for turning on traversability estimation (requires extra dependencies, check documentation)"/>
+  
+  <arg name="follow_waypoints"
+       default="false"
+       doc="whether to follow multiple waypoints stored in the input file (also used to save waypoints, see SMB path planner Wiki)"/>
+  
+  <arg name="global_frame"
+       default="odom"
+       doc="fixed global frame name in which odometry, map, etc are defined"/>
+  
+  <arg name="map_frame"
+       default="$(arg global_frame)"
+       doc="frame name in which the global costmap is defined"/>
+  
+  <arg name="robot_base_frame"
+       default="base_footprint"
+       doc="robot's base frame (typically fixed frame attached to the robot)"/>
+  
+  <arg name="odom_topic"
+       default="/odom"
+       doc="odometry of the robot is published on this topic"/>
+
+  <!-- TODO Set right map empty map there is nothing here  -->
+  <arg name="global_map"
+       default="$(find smb_navigation)/data/simulation/map.yaml"
+       doc="global map file path"/>
+
+  <!-- Mapping LAUNCH FILE NUM 1  -->
+  <!-- CAMERA D435I PCL TO SCAN  -->
+  <!-- <include file="$(find smb_navigation)/launch/mapping/point_cloud_to_scan.launch">
+    <arg name="cloud_in_topic" value="/camera/depth/points_downsampled"/>
+    <arg name="scan_out_topic" value="/scan"/>
+  </include> -->
+
+  <group if="$(arg run_traversability)">
+    <!-- This is move base with traversability estimation - you can switch cost layers on and off from dynamic rqt -->
+    <include file="$(find elevation_mapping)/launch/move_base_ompl_traversability_simulation.launch">
+      <arg name="global_frame"     value="$(arg global_frame)"/>
+      <arg name="robot_base_frame" value="$(arg robot_base_frame)"/>
+      <arg name="odom_topic"       value="/odom"/>
+      <arg name="sim"              value="$(arg sim)"/>
+    </include>
+
+  <node pkg="simple_navigation_goals" type="simple_navigation_goals" name="simple_navigation_goals"/>
+
+
+    <!-- Traversability mapping -->
+    <include file="$(find elevation_mapping)/launch/traversability_mapping_sobhan.launch">
+      <arg name="launch_prefix" value=""/>
+      <arg name="odom_topic"    value="/odom"/>
+    </include>
+  </group>
+
+  <!-- Launch RViz with the demo configuration. -->
+  <include file="$(find smb_opc)/launch/opc.launch"/>
+
+
+</launch> 

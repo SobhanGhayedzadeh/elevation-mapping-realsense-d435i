@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+
+  <arg name="launch_prefix"         default=""/>
+  <arg name="sim"                   default="false"/>
+
+  <arg name="cmd_vel_topic"         default="/cmd_vel_autonomous"/>
+  <arg name="tf_topic"              default="/tf"/>
+  <arg name="odom_topic"            default="/odom"/>
+  <arg name="obstacle_scan_topic"   default="/camera/depth/points_downsampled"/>
+  
+  <arg name="global_frame"          default="map"/>
+  <arg name="robot_base_frame"      default="camera_link"/>
+
+  <arg name="base_global_planner"   default="smb_ompl_planner/OmplPlanner"/>
+  <arg name="base_local_planner"    default="teb_local_planner/TebLocalPlannerROS"/>
+  
+  <!-- Argument to swap between config files (sim or real robot) -->
+  <arg name="config_file_suffix"    value="_sim" if="$(arg sim)"/>
+  <arg name="config_file_suffix"    value=""     unless="$(arg sim)"/>
+
+  <!-- The one and only Node in this launch file -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" launch-prefix="$(arg launch_prefix)">
+    <!-- Topic remapping -->
+    <remap from="/cmd_vel"    to="$(arg cmd_vel_topic)"/>
+    <remap from="/tf"         to="$(arg tf_topic)"/>
+    <remap from="/tf_static"  to="$(arg tf_topic)_static"/>
+    <remap from="/odom"       to="$(arg odom_topic)"/>
+    <remap from="/scan"       to="$(arg obstacle_scan_topic)"/>
+
+    <!-- Which Planner should it use (It is just a name) -->
+    <param name="base_global_planner" value="$(arg base_global_planner)"/>
+    <param name="base_local_planner"  value="$(arg base_local_planner)"/>
+    
+    <!-- Load the OMPL parameters THERE IS SOME RANDOM NUMBER IN IT-->
+    <rosparam file="$(find elevation_mapping_demos)/config/smb_sobhan/ompl_global_planner.yaml" command="load"/>
+    
+    <!-- Load the right config file for local planner (suffix is either "" or "_sim") STILL SOME RANDOM NUMBER -->
+    <rosparam file="$(find elevation_mapping_demos)/config/smb_sobhan/base_local_planner$(arg config_file_suffix).yaml" command="load"/>
+    
+    <!-- Additional parameters -->
+    <param name="footprint_padding"         value="0.00" />
+    <param name="controller_frequency"      value="5.0" />
+    <param name="controller_patience"       value="3.0" />
+    <param name="oscillation_timeout"       value="30.0" />
+    <param name="oscillation_distance"      value="0.5" />
+    <param name="planner_patience"          value="1" />
+    <param name="controller_patience"       value="1" /> 
+    <param name="recovery_behavior_enabled" value="false" />
+
+    <!-- observation sources located in costmap_common.yaml THERE IS THIS SCAN IF YOU WANT TO CHANGE IT -->
+    <rosparam file="$(find elevation_mapping_demos)/config/smb_sobhan/move_base_costmaps/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find elevation_mapping_demos)/config/smb_sobhan/move_base_costmaps/costmap_common_params.yaml" command="load" ns="local_costmap" />
+
+    <!-- local costmap, needs size THERE IS STILL THIS FUCKING SCAN-->
+    <rosparam file="$(find elevation_mapping_demos)/config/smb_sobhan/move_base_costmaps/local_costmap_params_traversability.yaml" command="load" />
+    
+    <!-- Topics -->
+    <param name="OmplPlanner/odometry_topic"      value="$(arg odom_topic)"/>
+    <param name="TebLocalPlannerROS/odom_topic"   value="$(arg odom_topic)"/>
+    <param name="TebLocalPlannerROS/map_frame"    value="$(arg global_frame)"/> <!-- This is the global planning frame -->
+
+    <!-- global costmap -->
+    <rosparam file="$(find elevation_mapping_demos)/config/smb_sobhan/move_base_costmaps/global_costmap_params_ompl_traversability.yaml" command="load"/>
+    <param name="global_costmap/global_frame"     value="$(arg global_frame)"/>
+    <param name="global_costmap/robot_base_frame" value="$(arg robot_base_frame)"/>
+    <param name="global_costmap/width"            value="100.0"/>
+    <param name="global_costmap/height"           value="100.0"/>
+    <param name="global_costmap/origin_x"         value="-50.0"/>
+    <param name="global_costmap/origin_y"         value="-50.0"/>
+    
+    <!-- local costmap -->
+    <param name="local_costmap/global_frame"      value="$(arg global_frame)"/>
+    <param name="local_costmap/robot_base_frame"  value="$(arg robot_base_frame)"/>
+  </node>
+
+</launch>
