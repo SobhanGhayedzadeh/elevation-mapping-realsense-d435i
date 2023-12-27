@@ -1,0 +1,75 @@
+# # Traversability map filter parameters
+# traversability_map_filters:
+#   - name: surfaceNormalsFilter
+#     type: gridMapFilters/NormalVectorsFilter
+#     params:
+#       input_layer: elevation
+#       output_layers_prefix: surface_normal_
+#       radius: 0.05
+#       normal_vector_positive_axis: z
+#   - name: slopeFilter
+#     type: traversabilityFilters/SlopeFilter
+#     params:
+#       map_type: traversability_slope
+#       critical_value: 1.3
+#   - name: stepFilter
+#     type: traversabilityFilters/StepFilter
+#     params:
+#       map_type: traversability_step
+#       critical_value: 0.3
+#       first_window_radius: 0.15
+#       second_window_radius: 0.09
+#       critical_cell_number: 2
+#   - name: roughnessFilter
+#     type: traversabilityFilters/RoughnessFilter
+#     params:
+#       map_type: traversability_roughness
+#       critical_value: 0.1
+#       estimation_radius: 0.1
+#   - name: weightedSumFilter
+#     type: gridMapFilters/MathExpressionFilter
+#     params:
+#       output_layer: traversability
+#       expression: (1.0 / 10.0) * (3*traversability_slope + 6*traversability_step + traversability_roughness)
+#   - name: deletionFilter
+#     type: gridMapFilters/DeletionFilter
+#     params:
+#       layers: [surface_normal_x, surface_normal_y, surface_normal_z]
+
+# Traversability map filter parameters
+traversability_map_filters:
+  - name: surfaceNormalsFilter
+    type: gridMapFilters/NormalVectorsFilter
+    params:
+      input_layer: elevation
+      output_layers_prefix: surface_normal_
+      radius: 0.1
+      normal_vector_positive_axis: z
+  - name: slopeFilter
+    type: traversabilityFilters/SlopeFilter
+    params:
+      map_type: traversability_slope
+      critical_value: 1.4
+  - name: stepFilter
+    type: traversabilityFilters/StepFilter
+    params:
+      map_type: traversability_step
+      critical_value: 0.1
+      first_window_radius: 0.15
+      second_window_radius: 0.09
+      critical_cell_number: 1
+  - name: roughnessFilter
+    type: traversabilityFilters/RoughnessFilter
+    params:
+      map_type: traversability_roughness
+      critical_value: 0.05
+      estimation_radius: 0.05
+  - name: weightedSumFilters
+    type: gridMapFilters/MathExpressionFilter
+    params:
+      output_layer: traversability
+      expression: (1.0 / 1.0) * (0 * traversability_slope + 1 * traversability_step)
+  - name: deletionFilter
+    type: gridMapFilters/DeletionFilter
+    params:
+      layers: [surface_normal_x, surface_normal_y, surface_normal_z]

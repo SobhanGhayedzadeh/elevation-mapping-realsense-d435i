@@ -1,0 +1,65 @@
+input_sources:
+  camera:
+    type: pointcloud
+    topic: "/camera/depth/color/points_downsampled"
+    queue_size: 1
+    publish_on_update: true
+    sensor_processor: 
+      ignore_points_above: .inf
+      ignore_points_below: -.inf
+      cutoff_min_depth: 0.5
+      cutoff_max_depth: 3.25
+      type: structured_light # https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8768489
+      normal_factor_a: 0.000611
+      normal_factor_b:  0.003587
+      normal_factor_c: 0.3515
+      normal_factor_d: 0
+      normal_factor_e: 1
+      lateral_factor: 0.01576 # approx 1 deg
+
+
+point_cloud_topic: "/points_downsampled"
+map_frame_id: "map"
+robot_base_frame_id: "camera_link"
+robot_pose_with_covariance_topic: "/rtabmap/localization_pose"      #"/rtabmap/localization_pose" #/pose
+robot_pose_cache_size: 200
+track_point_frame_id: "camera_link"
+track_point_x: 0.0
+track_point_y: 0.0
+track_point_z: 0.0
+
+
+# Map.
+length_in_x:                                6.0
+length_in_y:                                6.0
+position_x:                                 0.0
+position_y:                                 0.0 
+resolution:                                 0.07
+min_variance:                               0.0001
+max_variance:                               0.05
+mahalanobis_distance_threshold:             1.5
+multi_height_noise:                         0.0001
+surface_normal_positive_axis:               z
+fused_map_publishing_rate:                  2.0
+enable_visibility_cleanup:                  true
+visibility_cleanup_rate:                    0.5
+scanning_duration:                          0.5
+
+
+
+# input_sources:
+#   ground_truth_cloud: # A name to identify the input source
+#     type: pointcloud # Supported types: pointcloud
+#     topic: /points
+#     queue_size: 1
+#     publish_on_update: true # Whether to publish the elevation map after a callback from this source.
+#     sensor_processor:
+#       type: perfect
+# map_frame_id: "map"
+# robot_base_frame_id: "base"
+# robot_pose_with_covariance_topic: "" # Leaving this empty skipps pose covariance updates.
+# robot_pose_cache_size: 200
+# track_point_frame_id: "base"
+# track_point_x: 0.0
+# track_point_y: 0.0
+# track_point_z: 0.0

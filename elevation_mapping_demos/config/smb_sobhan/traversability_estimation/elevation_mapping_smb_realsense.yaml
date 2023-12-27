@@ -1,0 +1,20 @@
+point_cloud_topic: /camera/depth/points_downsampled #/realsense_d435/depth/points
+sensor_frame_id: camera_depth_frame
+map_frame_id:  odom #tracking_camera_odom
+robot_base_frame_id: base_footprint #base_link
+robot_pose_with_covariance_topic: /stamped_pose_covariance
+robot_pose_cache_size: 200
+track_point_frame_id: base_footprint #base
+track_point_x: 0.0
+track_point_y: 0.0
+track_point_z: 0.0
+
+length_in_x: 10.0
+length_in_y: 10.0
+position_x: 0.0
+position_y: 0.0
+resolution: 0.11
+min_variance: 0.000009
+max_variance: 0.5
+mahalanobis_distance_threshold: 2.5
+multi_height_noise: 0.0000009

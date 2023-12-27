@@ -1,0 +1,50 @@
+# more on http://wiki.ros.org/navigation/Tutorials/RobotSetup
+
+global_costmap:
+  update_frequency: 7
+  publish_frequency: 3.0
+  transform_tolerance: 0.5 # [s]
+  footprint: [[0.10, 0.10], [0.10, -0.10], [-0.10, -0.10], [-0.10, 0.10]] 
+  resolution: 0.07
+  inflation_radius: 0.1
+  rolling_window: true # Map moves with robot
+  map_topic: /traversability_estimation/traversability_map
+    
+  plugins:
+    -
+     name: traversability_layer
+     type: "traversability_layer::TraversabilityLayer"
+    - 
+     name: obstacle_layer
+     type: "costmap_2d::ObstacleLayer"  
+    -
+     name: inflation_layer
+     type: "costmap_2d::InflationLayer"
+
+  virtual_obstacles:
+    observation_sources: intel_realsense
+    
+  obstacle_layer:
+    enabled: false  
+    observation_sources: intel_realsense 
+    intel_realsense:
+      data_type: 'PointCloud2'
+      topic: /camera/depth/points_downsampled
+      marking: true
+      clearing: true
+      min_obstacle_height: -100.0
+      max_obstacle_height: 100.0
+      observation_persistence: 0.1
+      inf_is_valid: true   
+
+  inflation_layer:
+    enabled: true    
+    observation_sources: intel_realsense
+    
+  traversability_layer:
+    enabled: true  # Change this to make this layer active
+    topic:  /traversability_estimation/traversability_map
+    marking: true
+    clearing: true
+    traversability_layer: "traversability"
+    traversable_threshold: 0.7

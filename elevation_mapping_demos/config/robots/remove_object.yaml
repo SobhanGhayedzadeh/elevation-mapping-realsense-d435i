@@ -1,0 +1,29 @@
+input_sources:
+  camera:
+    type: pointcloud
+    topic: "/camera/depth/color/points_downsampled"
+    queue_size: 1
+    publish_on_update: true
+    sensor_processor: 
+      ignore_points_above: .inf
+      ignore_points_below: -.inf
+      cutoff_min_depth: 0.2
+      cutoff_max_depth: 3.25
+      type: structured_light # https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8768489
+      normal_factor_a: 0.000611
+      normal_factor_b:  0.003587
+      normal_factor_c: 0.3515
+      normal_factor_d: 0
+      normal_factor_e: 1
+      lateral_factor: 0.01576 # approx 1 deg
+
+
+point_cloud_topic: "/points_downsampled"
+map_frame_id: "base_link"
+robot_base_frame_id: "camera_link"
+robot_pose_with_covariance_topic: "/pose"
+robot_pose_cache_size: 200
+track_point_frame_id: "base_link"
+track_point_x: 0.0
+track_point_y: 0.0
+track_point_z: 0.0
