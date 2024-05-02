@@ -1,0 +1,49 @@
+input_sources:
+  input_front:
+    type: pointcloud
+    topic: /camera/depth/color/points_downsampled
+    queue_size: 1
+    publish_on_update: true
+    sensor_processor:
+      ignore_points_above: .inf
+      ignore_points_below: -.inf
+      type: structured_light
+      # Written by Lefteris kotsonis.
+      # Modeling Realsense D435 Sensor Noise for Improved 3D Reconstruction and Tracking.
+      cutoff_min_depth: 0.2
+      cutoff_max_depth: 3.25
+      normal_factor_a: 0.000611
+      normal_factor_b:  0.003587
+      normal_factor_c: 0.3515
+      normal_factor_d: 0
+      normal_factor_e: 1
+      lateral_factor: 0.01576
+
+point_cloud_topic: "/points_downsampled"
+map_frame_id: "camera_link"
+robot_base_frame_id: "camera_link"
+robot_pose_with_covariance_topic: "/pose"      #"/rtabmap/localization_pose"      #/pose
+robot_pose_cache_size: 200
+track_point_frame_id: "camera_link"
+track_point_x: 0.0
+track_point_y: 0.0
+track_point_z: 0.0
+
+
+# Map.
+length_in_x:                                6.0
+length_in_y:                                6.0
+position_x:                                 0.0
+position_y:                                 0.0 
+resolution:                                 0.07
+min_variance:                               0.0001
+max_variance:                               0.05
+mahalanobis_distance_threshold:             1.5
+multi_height_noise:                         0.0001
+surface_normal_positive_axis:               z
+fused_map_publishing_rate:                  100
+enable_visibility_cleanup:                  true
+visibility_cleanup_rate:                    0.5
+scanning_duration:                          0.5
+
+

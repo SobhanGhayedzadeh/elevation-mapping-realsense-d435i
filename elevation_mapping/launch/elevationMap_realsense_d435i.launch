@@ -1,6 +1,9 @@
 <launch>
+  
+  <!-- True When this launch file is only used for creating the Elevation Map -->
+  <arg name="elevation" default="false"/> 
 
-  <arg name="camera" default="false"/>
+  <!-- True enable the traversability map  -->
   <arg name="traversability" default="false"/>
 
   <!-- Create a new TF -->
@@ -8,14 +11,16 @@
   <node pkg="tf" type="static_transform_publisher" name="map2camera" args="0 0 0 0 0 0 1 /map /camera_link 1000000000"/>
 
   <!-- Starting the camera -->
-  <group if="$(arg camera)">
+  <group if="$(arg elevation)">
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
       <arg name="filters" value="pointcloud"/>
     </include> 
   </group>
 
-  <!-- Publish tf 'base_footprint' as POSE.-->
-  <!-- <node pkg="elevation_mapping_demos" type="pose_translator.py" name="pose_tanslator"/> -->
+  <group if="$(arg elevation)">
+    <!-- Publish tf 'base_footprint' as POSE.-->
+    <node pkg="elevation_mapping_demos" type="pose_translator.py" name="pose_tanslator"/>
+  </group>
 
   <!-- Run a passthrough filter to down-sample the sensor point cloud.-->
   <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen"/>
@@ -27,23 +32,38 @@
       filter_limit_min: 0.01
       filter_limit_max: 6.0  <!-- Limit the range of points to forward to 6 meters in viewing direction-->
       filter_limit_negative: False
-      leaf_size: 0.05 <!-- Limit the density to 5 cm-->
+      leaf_size: 0.06 <!-- Limit the density to 6 cm-->
     </rosparam>
   </node>
 
-  <!-- Elevation mapping node -->
-  <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
-    <rosparam command="load" file="$(find elevation_mapping_demos)/config/robots/simple_demo_robot.yaml" />
-    <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/realsense_d435.yaml" />
-    <rosparam command="load" file="$(find elevation_mapping_demos)/config/postprocessing/postprocessor_pipeline.yaml" />
-  </node>
+  <!-- With NO POSE_WITH_COVARIANCE -->
+  <group if="$(arg elevation)">
+    <!-- Elevation mapping node -->
+    <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
+      <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/realsense_d435i_no_pose.yaml" />
+      <rosparam command="load" file="$(find elevation_mapping_demos)/config/postprocessing/postprocessor_pipeline.yaml" />
+    </node>
 
+    <!-- Launch RViz with the demo configuration -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping)/rviz/elevation_map_realsense_d435i_no_pose.rviz" />
+  
+  </group>
+
+  <!-- Using POSE_WITH_COVARIANCE from RTABMAP  -->
+  <group unless="$(arg elevation)">
+    <!-- Elevation mapping node -->
+    <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
+      <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/realsense_d435i_rtabmap_pose.yaml" />
+      <rosparam command="load" file="$(find elevation_mapping_demos)/config/postprocessing/postprocessor_pipeline.yaml" />
+    </node>
+  </group>
+  
   <!-- Launch visualizations for the resulting elevation map -->
   <include file="$(find elevation_mapping_demos)/launch/visualization.launch" />
 
-  <!-- Launch RViz with the demo configuration -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping_demos)/rviz/elevation_map_visualization_pointcloud.rviz" />
+  
 
+  <!-- Enable the Traversability Map -->
   <group if="$(arg traversability)">
     <include file="$(find traversability_estimation)/launch/traversability_d435i.launch"/>
   </group>
