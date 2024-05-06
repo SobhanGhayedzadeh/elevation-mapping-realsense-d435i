@@ -3,7 +3,9 @@
 <launch>
   
   <!-- True When this launch file is only used for creating the Elevation Map -->
-  <arg name="elevation" default="false"/> 
+  <arg name="pose" default="false"/> 
+  <!-- Launch the camera -->
+  <arg name="camera" default="true"/> 
   <!-- True enable the traversability map  -->
   <arg name="traversability" default="false"/>
 
@@ -12,13 +14,13 @@
   <node pkg="tf" type="static_transform_publisher" name="map2camera" args="0 0 0 0 0 0 1 /map /camera_link 1000000000"/>
 
   <!-- Starting the camera -->
-  <group if="$(arg elevation)">
+  <group if="$(arg camera)">
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
       <arg name="filters" value="pointcloud"/>
     </include> 
   </group>
 
-  <group if="$(arg elevation)">
+  <group unless="$(arg pose)">
     <!-- Publish tf 'base_footprint' as POSE.-->
     <node pkg="elevation_mapping_demos" type="pose_translator.py" name="pose_tanslator"/>
   </group>
@@ -38,7 +40,7 @@
   </node>
 
   <!-- With NO POSE_WITH_COVARIANCE -->
-  <group if="$(arg elevation)">
+  <group unless="$(arg pose)">
     <!-- Elevation mapping node -->
     <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
       <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/realsense_d435i_no_pose.yaml" />
@@ -50,12 +52,15 @@
   </group>
 
   <!-- Using POSE_WITH_COVARIANCE from RTABMAP -->
-  <group unless="$(arg elevation)">
+  <group if="$(arg pose)">
     <!-- Elevation mapping node -->
     <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
       <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/realsense_d435i_rtabmap_pose.yaml" />
       <rosparam command="load" file="$(find elevation_mapping_demos)/config/postprocessing/postprocessor_pipeline.yaml" />
     </node>
+
+    <!-- Launch RViz with the demo configuration -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping)/rviz/elevation_map_realsense_d435i_no_pose.rviz" />
   </group>
   
   <!-- Launch visualizations for the resulting elevation map -->

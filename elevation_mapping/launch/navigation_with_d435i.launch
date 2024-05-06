@@ -3,9 +3,6 @@
 <launch>
   <!-- Arguments -->
 
-  <!-- <arg name="run_elevation_map" 
-       defualt="true"/> -->
-
   <arg name="camera_in_elevation_mapping"
        default="false"/>
 
