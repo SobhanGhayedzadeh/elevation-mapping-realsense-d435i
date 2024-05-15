@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>traversability_estimation</name>
+  <version>0.4.0</version>
+  <description>ROS package for estimating traversability from elevation maps.</description>
+  <maintainer email="pfankhauser@anybotics.com">Peter Fankhauser</maintainer>
+  <author email="martiwer@student.ethz.ch">Martin Wermelinger</author>
+  <author email="pfankhauser@anybotics.com">Peter Fankhauser</author>
+  <author email="ralf.kaestner@gmail.com">Ralf Kaestner</author>
+  <license>MIT</license>
+  <url type="website">https://github.com/ethz-asl/traversability_estimation</url>
+  <url type="bugtracker">https://github.com/ethz-asl/traversability_estimation/issues</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>tf</depend>
+  <depend>tf_conversions</depend>
+  <depend>grid_map_ros</depend>
+  <depend>grid_map_core</depend>
+  <depend>grid_map_msgs</depend>
+  <depend>grid_map_filters</depend>
+  <depend>traversability_msgs</depend>
+  <depend>traversability_estimation_filters</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>param_io</depend>
+  <depend>xmlrpcpp</depend>
+  <depend>cmake_modules</depend>
+  <depend>kindr</depend>
+  <build_export_depend>eigen</build_export_depend>
+
+
+</package>
