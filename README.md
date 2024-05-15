@@ -5,7 +5,7 @@ This ROS package is designed for elevation mapping using a mobile robot equipped
 
 
 ### What Camera Sees
-![pic](/elevation_mapping_demos/doc/Elevation_mapping.png|width=678)
+![pic](/elevation_mapping_demos/doc/Elevation_mapping.png)
 
 ### Generated Elevation and Traversability Map 
 ![gif](/elevation_mapping_demos/doc/Video_elevation_mapping.gif)
