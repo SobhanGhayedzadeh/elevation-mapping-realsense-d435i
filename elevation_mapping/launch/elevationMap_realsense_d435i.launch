@@ -4,21 +4,12 @@
   
   <!-- True When this launch file is only used for creating the Elevation Map -->
   <arg name="pose" default="false"/> 
-  <!-- Launch the camera -->
-  <arg name="camera" default="true"/> 
   <!-- True enable the traversability map  -->
   <arg name="traversability" default="false"/>
 
   <!-- Create a new TF -->
   <!-- <node pkg="tf" type="static_transform_publisher" name="base2camera" args="0 0 0 0 0 0 /base_link  /camera_link"/> -->
-  <node pkg="tf" type="static_transform_publisher" name="map2camera" args="0 0 0 0 0 0 1 /map /camera_link 1000000000"/>
-
-  <!-- Starting the camera -->
-  <group if="$(arg camera)">
-    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
-      <arg name="filters" value="pointcloud"/>
-    </include> 
-  </group>
+  <node pkg="tf" type="static_transform_publisher" name="map2camera" args="0 0 0 0 0 0  /map /camera_link 100000000000"/>
 
   <group unless="$(arg pose)">
     <!-- Publish tf 'base_footprint' as POSE.-->
@@ -41,6 +32,11 @@
 
   <!-- With NO POSE_WITH_COVARIANCE -->
   <group unless="$(arg pose)">
+    <!-- Launch the Camera -->
+    <include file="$(find elevation_mapping)/launch/launch_d435i.launch">
+      <arg name="run_rtabmap" value="false"/>
+    </include> 
+
     <!-- Elevation mapping node -->
     <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
       <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/realsense_d435i_no_pose.yaml" />
@@ -53,6 +49,11 @@
 
   <!-- Using POSE_WITH_COVARIANCE from RTABMAP -->
   <group if="$(arg pose)">
+    <!-- Launch the Camera with Rtabmap-->
+    <include file="$(find elevation_mapping)/launch/launch_d435i.launch">
+      <arg name="run_rtabmap" value="true"/>
+    </include> 
+
     <!-- Elevation mapping node -->
     <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
       <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/realsense_d435i_rtabmap_pose.yaml" />

@@ -1,6 +1,6 @@
 # more on http://wiki.ros.org/move_base
 
-controller_frequency: 0.4
+controller_frequency: 1
 recovery_behavior_enabled: true
 clearing_rotation_allowed: true
 
@@ -53,8 +53,8 @@ TebLocalPlannerROS:
   complete_global_plan: false
 
   # Obstacles 
-  min_obstacle_dist: 0.5
-  inflation_dist: 0.05
+  min_obstacle_dist: 0.2
+  inflation_dist: 0.025
   include_costmap_obstacles: True
   costmap_obstacles_behind_robot_dist: 1.0
   obstacle_poses_affected: 50

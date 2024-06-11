@@ -2,17 +2,22 @@
 
 <launch>
 
+
+  <!-- Argument -->
   <arg name="launch_prefix"         default=""/>
   <arg name="sim"                   default="false"/>
 
+  <!-- Topics -->
   <arg name="cmd_vel_topic"         default="/cmd_vel_autonomous"/>
   <arg name="tf_topic"              default="/tf"/>
   <arg name="odom_topic"            default="/odom"/>
   <arg name="obstacle_scan_topic"   default="/camera/depth/points_downsampled"/>
-  
+
+  <!-- Frames -->
   <arg name="global_frame"          default="map"/>
   <arg name="robot_base_frame"      default="camera_link"/>
 
+  <!-- Planners -->
   <arg name="base_global_planner"   default="smb_ompl_planner/OmplPlanner"/>
   <arg name="base_local_planner"    default="teb_local_planner/TebLocalPlannerROS"/>
   
@@ -29,7 +34,7 @@
     <remap from="/odom"       to="$(arg odom_topic)"/>
     <remap from="/scan"       to="$(arg obstacle_scan_topic)"/>
 
-    <!-- Which Planner should it use (It is just a name) -->
+    <!-- Which Planner should it uses (It is just a name) -->
     <param name="base_global_planner" value="$(arg base_global_planner)"/>
     <param name="base_local_planner"  value="$(arg base_local_planner)"/>
     

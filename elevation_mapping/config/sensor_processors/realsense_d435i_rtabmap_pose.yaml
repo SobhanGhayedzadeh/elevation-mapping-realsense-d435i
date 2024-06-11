@@ -20,7 +20,7 @@ input_sources:
       lateral_factor: 0.01576
 
 point_cloud_topic: "/points_downsampled"
-map_frame_id: "map"
+map_frame_id: "odom"
 robot_base_frame_id: "camera_link"
 robot_pose_with_covariance_topic: "/rtabmap/localization_pose"      #"/rtabmap/localization_pose" #/pose
 robot_pose_cache_size: 200

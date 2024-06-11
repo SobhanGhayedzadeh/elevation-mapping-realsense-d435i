@@ -1,5 +1,5 @@
 submap_service: "/elevation_mapping/get_submap"
-map_frame_id: "camera_link"     # Must be the same as the input elevation submap.     "odom"   "camera_link"
+map_frame_id: "odom"     # Must be the same as the input elevation submap.     "odom"   "camera_link"
 robot_frame_id: "camera_link"
 min_update_rate: 1.5
 map_center_x: 0.0
@@ -9,5 +9,5 @@ map_length_y: 6.0
 footprint_yaw: 0.1
 max_gap_width: 0.3
 grid_map_to_initialize_traversability_map:
-  enable: false
+  enable: true
   grid_map_topic_name: initial_elevation_map

@@ -87,12 +87,12 @@ For using this package, you can choose to utilize the `rtabmap posewithcovarianc
 1. Launch the elevation mapping node with rtabmap pose with covariance (Allowing the camera to rotate and move):
 
     ```bash
-    roslaunch elevation_mapping elevationMap_realsense_d435i.launch camera:=true pose:=true traversability:=true
+    roslaunch elevation_mapping elevationMap_realsense_d435i.launch pose:=true traversability:=true
     ```
 2. Launch the elevation mapping node without any pose with covariance (Camera is motionless):
 
     ```bash
-    roslaunch elevation_mapping elevationMap_realsense_d435i.launch camera:=true pose:=false traversability:=true
+    roslaunch elevation_mapping elevationMap_realsense_d435i.launch pose:=false traversability:=true
     ```
 
     After launching, an RViz configuration will load for visualization of the elevation map.

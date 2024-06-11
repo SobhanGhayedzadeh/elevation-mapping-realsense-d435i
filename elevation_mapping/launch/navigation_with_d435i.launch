@@ -3,45 +3,38 @@
 <launch>
   <!-- Arguments -->
 
-  <arg name="camera_in_elevation_mapping"
-       default="false"/>
-
-  <arg name="traversability_in_elevation_mapping"
-       default="true"/>
-
+  <!-- Use Rtabmap or Pose -->
   <arg name="run_rtabmap"
        default="true"/>
 
-  <arg name="offline"
-       default="false"/>
-
-  <arg name="rtabmapviz"
-       default="false"/>
-
+  <!-- Launch the Traversability Map -->
+  <arg name="traversability_in_elevation_mapping"
+       default="true"/>
+       
+  <!-- Run Navigation      -->
   <arg name="run_navigation"
        default="true"/>
-
 
 
   <arg name="sim"
        default="true"
        doc="run on simulation or real robot?"/>
   
-  <arg name="use_global_map"
+  <!-- <arg name="use_global_map"
        default="false"
-       doc="whether to use predefined map for global planning"/>
-
+       doc="whether to use predefined map for global planning"/> -->
+<!-- 
   <arg name="exploration"
        default="false"
-       doc="whether to use parameters for exploration"/>
+       doc="whether to use parameters for exploration"/> -->
 
-  <arg name="run_traversability"
+  <!-- <arg name="run_traversability"
        default="true"
        doc="for turning on traversability estimation (requires extra dependencies, check documentation)"/>
   
   <arg name="follow_waypoints"
        default="false"
-       doc="whether to follow multiple waypoints stored in the input file (also used to save waypoints, see SMB path planner Wiki)"/>
+       doc="whether to follow multiple waypoints stored in the input file (also used to save waypoints, see SMB path planner Wiki)"/> -->
   
   <arg name="global_frame"
        default="map"
@@ -65,22 +58,11 @@
        default="$(find smb_navigation)/data/simulation/map.yaml"
        doc="global map file path"/>
   
-  <!-- Starting the Camera and getting pointcloud and posewithcovariance data using rtabmap Package -->
-  <group if="$(arg run_rtabmap)">
-    <include file="$(find my_realsense)/launch/D435i_mapping.launch">
-     <arg name="offline"           value="$(arg offline)"/>
-     <arg name="rtabmapviz"        value="$(arg rtabmapviz)"/>
-     <arg name="rviz"              value="false"/>
-    </include>
-  </group>
-
   <!-- Creating Elevation Map based on realsense data  -->
-  <!-- <group if="$(arg run_elevation_map)"> -->
     <include file="$(find elevation_mapping)/launch/elevationMap_realsense_d435i.launch">
-     <arg name="camera"            value="$(arg camera_in_elevation_mapping)"/>
+     <arg name="pose"              value="$(arg run_rtabmap)"/>
      <arg name="traversability"    value="$(arg traversability_in_elevation_mapping)"/>
     </include>
-  <!-- </group> -->
 
   <group if="$(arg run_navigation)">
     <!-- This is move base with traversability estimation - you can switch cost layers on and off from dynamic rqt -->
@@ -94,6 +76,5 @@
 
   <!-- Launch RViz with the demo configuration. -->
   <!-- <include file="$(find smb_opc)/launch/opc.launch"/> -->
-
 
 </launch> 
