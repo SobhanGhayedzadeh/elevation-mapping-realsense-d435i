@@ -1,7 +1,11 @@
 <launch>
   <env name="ROSCONSOLE_CONFIG_FILE" value="$(find traversability_estimation)/config/rosconsole.conf"/>
+
+  <arg name="pose" default="false"/> 
+
   <node pkg="traversability_estimation" type="traversability_estimation_node" name="traversability_estimation" output="screen">
-    <rosparam command="load" file="$(find traversability_estimation)/config/d435i.yaml"/>
+    <rosparam if="$(arg pose)" command="load" file="$(find traversability_estimation)/config/d435i.yaml"/>
+    <rosparam unless="$(arg pose)" command="load" file="$(find traversability_estimation)/config/d435i_no_pose.yaml"/>
     <rosparam command="load" file="$(find traversability_estimation)/config/d435i_footprint_parameter.yaml"/>
     <rosparam command="load" file="$(find traversability_estimation)/config/d435i_filter_parameter.yaml"/>
   </node>

@@ -61,7 +61,7 @@
     </node>
 
     <!-- Launch RViz with the demo configuration -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping)/rviz/elevation_map_realsense_d435i_no_pose.rviz" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping)/rviz/elevation_map_realsense_d435i.rviz" />
   </group>
   
   <!-- Launch visualizations for the resulting elevation map -->
@@ -69,7 +69,9 @@
 
   <!-- Enable the Traversability Map -->
   <group if="$(arg traversability)">
-    <include file="$(find traversability_estimation)/launch/traversability_d435i.launch"/>
+    <include file="$(find traversability_estimation)/launch/traversability_d435i.launch">
+      <arg name="pose" value="$(arg pose)"/>
+    </include>
   </group>
 
 </launch>

@@ -28,6 +28,7 @@ This software is built on the Robotic Operating System (ROS), which needs to be 
 - [Point Cloud Library (PCL)](http://pointclouds.org/) (point cloud processing),
 - [Eigen](http://eigen.tuxfamily.org) (linear algebra library)
 - [Message Logger](https://github.com/ANYbotics/message_logger) (An Interface for Message Logging)
+- [ANY Node](https://github.com/ANYbotics/any_node) (Set of wrapper packages to handle multi-threaded ROS nodes)
 
 
 ### Installation Steps
@@ -85,6 +86,8 @@ Adjust parameters in the launch file to customize the mapping behavior.
 For using this package, you can choose to utilize the `rtabmap posewithcovariance` or opt not to use it. 
 
 1. Launch the elevation mapping node with rtabmap pose with covariance (Allowing the camera to rotate and move):
+
+Note: make sure to slowly rotate the camera to activate the rtabmap at the start of launching
 
     ```bash
     roslaunch elevation_mapping elevationMap_realsense_d435i.launch pose:=true traversability:=true
